@@ -1,9 +1,9 @@
-const React=require('react');
-const ReactDOM=require('react-dom');
+const path=require('path');
+const React=require(path.resolve(__dirname,'..','static','js','react.production.min.js'));
+const ReactDOM=require(path.resolve(__dirname,'..','static','js','react-dom.production.min.js'));
 const {Col,Panel,Button,ButtonGroup,ListGroup,ListGroupItem,
   FormGroup,FormControl,InputGroup}=require('react-bootstrap');
 
-const path=require('path');
 const {FitPlot}=require(path.resolve(__dirname,'..','addons','FitPlot'));
 const {LinearModelFit}=require(path.resolve(__dirname,'..','addons','LinearModelFit'));
 const {DirectProportionFit}=require(path.resolve(__dirname,'..','addons','DirectProportionFit'));

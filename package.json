@@ -1,0 +1,20 @@
+{
+  "name": "SetLite",
+  "version": "0.1.0",
+  "description": "A lightweight electron app for data processing & visualization",
+  "main": "main.js",
+  "scripts": {
+    "build": "electron-packager . SetLite --win --out release -arch=x64 --electronVersion 3.0.9 --overwrite --ignore=node_modules",
+    "start": "electron ."
+  },
+  "dependencies": {
+    "react": "^16.6.3",
+    "react-bootstrap": "^0.32.4",
+    "react-dom": "^16.6.3"
+  },
+  "devDependencies": {
+    "electron-packager": "^12.2.0"
+  },
+  "author": "xuehongyanL",
+  "license": "MIT"
+}

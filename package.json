@@ -4,14 +4,10 @@
   "description": "A lightweight electron app for data processing & visualization",
   "main": "main.js",
   "scripts": {
-    "build": "electron-packager . SetLite --win --out release -arch=x64 --electronVersion 3.0.9 --overwrite --ignore=node_modules",
     "start": "electron ."
   },
   "dependencies": {
-    "react-bootstrap": "^0.32.4"
-  },
-  "devDependencies": {
-    "electron-packager": "^12.2.0"
+    "electron": "^3.0.10"
   },
   "author": "xuehongyanL",
   "license": "MIT"

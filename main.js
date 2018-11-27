@@ -1,10 +1,5 @@
-const electron=require('electron');
-const BrowserWindow=electron.BrowserWindow;
-const Menu=electron.Menu;
-const MenuItem=electron.MenuItem;
-const app=electron.app;
+const {BrowserWindow,Menu,MenuItem,app,ipcMain}=require('electron');
 const path=require("path");
-const {ipcMain}=require('electron');
 
 let win;
 function createWindow(){
@@ -15,14 +10,14 @@ function createWindow(){
     });
     menu=new Menu();
     menu.append(new MenuItem({
-        label:'undo',
-        click:function(){win.webContents.send('fit','undo');},
-        accelerator: 'CmdOrCtrl+Z'
-    }));
-    menu.append(new MenuItem({
         label:'addpt',
         click:function(){win.webContents.send('fit','addpt');},
         accelerator: 'Enter'
+    }));
+    menu.append(new MenuItem({
+        label:'undo',
+        click:function(){win.webContents.send('fit','undo');},
+        accelerator: 'CmdOrCtrl+Z'
     }));
     Menu.setApplicationMenu(menu);
     win.loadFile(path.resolve(__dirname,'public','index.html'));

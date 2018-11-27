@@ -17,14 +17,10 @@ Lightweight
 
 ## Get Started
 **source version**:
-```
-cd SetLite
-npm install
-npm run
-```
+You can easily install *electron-packager* and so-on to pack the source.
 **release version**:
-
-Just click the **SetLite.exe**
+Just **click** the *SetLite.exe*
+Or you can put copy the whole source code folder into ./resources/ and rename it as "app".
 
 ## Usage
 **1)** Type the x(or y) value of a point into the X(or Y) box

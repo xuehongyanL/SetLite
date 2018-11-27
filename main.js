@@ -21,7 +21,7 @@ function createWindow(){
     }));
     Menu.setApplicationMenu(menu);
     win.loadFile(path.resolve(__dirname,'public','index.html'));
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
     win.on('close',() => {win = null;});
     //win.on('resize',() => {win.reload();})
 }

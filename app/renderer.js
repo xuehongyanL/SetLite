@@ -4,6 +4,7 @@ const {Col,Panel,Button,ButtonGroup,ListGroup,ListGroupItem,FormGroup,FormContro
 const {FitPlot}=require(path.resolve(__dirname,'..','addons','FitPlot'));
 const {LinearModelFit}=require(path.resolve(__dirname,'..','addons','LinearModelFit'));
 const {DirectProportionFit}=require(path.resolve(__dirname,'..','addons','DirectProportionFit'));
+const {DataFrame}=require('pandas-js');
 
 class Input extends React.Component{
   render(){
@@ -29,7 +30,7 @@ class Fit extends React.Component{
       nowxMode:'warning',nowyMode:'warning',
     };
     this.stat={
-      pts:new Array(),
+      pts:new DataFrame(),
       sumx:0,sumy:0,sumxy:0,
       sqsumx:0,sqsumy:0,
     };
@@ -58,7 +59,7 @@ class Fit extends React.Component{
     if(!y) this.setState({nowyMode:'error',validVal:false});
     if((!x&&x!=0)||(!y&&y!=0)){alert('invalid value');return;}
     let stat=this.stat;
-    stat.pts.push([x,y]);
+    stat.pts=stat.pts.append(new DataFrame([{'x':x,'y':y}]));
     stat.sumx+=x;
     stat.sumy+=y;
     stat.sumxy+=x*y;
@@ -72,25 +73,26 @@ class Fit extends React.Component{
   }
   rm_pt(id){
     var stat=this.stat;
-    const pt=stat.pts[id];
-    stat.pts.splice(id,1);
-    stat.sumx-=pt[0];
-    stat.sumy-=pt[1];
-    stat.sumxy-=pt[0]*pt[1];
-    stat.sqsumx-=pt[0]*pt[0];
-    stat.sqsumy-=pt[1]*pt[1];
+    let temp=stat.pts.to_json({orient: 'records'})
+    let pt=temp.splice(id,1)[0];
+    stat.sumx-=pt.x;
+    stat.sumy-=pt.y;
+    stat.sumxy-=pt.x*pt.y;
+    stat.sqsumx-=pt.x*pt.x;
+    stat.sqsumy-=pt.y*pt.y;
+    stat.pts=new DataFrame(temp);
     this.setState({cnt: this.state.cnt-1});
   }
   render(){
     var self=this;
     var stat=this.stat;
-    var res=stat.pts.map(function(pt,move){
+    var res=stat.pts.to_json({orient:'records'}).map(function(pt,move){
       return(
         <ListGroupItem key={move}>
           <button onClick={()=>{self.rm_pt(move);}}>
             <span className="glyphicon glyphicon-minus"></span>
           </button>
-          &nbsp;&nbsp;&nbsp;({pt[0]},{pt[1]})
+          &nbsp;&nbsp;&nbsp;({pt.x},{pt.y})
         </ListGroupItem>);
     });
     return(

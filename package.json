@@ -7,6 +7,9 @@
     "start": "electron ."
   },
   "dependencies": {
+    "pandas-js": "^0.2.4"
+  },
+  "devDependencies": {
     "electron": "^3.0.10"
   },
   "author": "xuehongyanL",

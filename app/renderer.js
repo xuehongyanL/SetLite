@@ -1,10 +1,12 @@
 const path=require('path');
+const Addon=require(path.resolve(__dirname,'..','addons','AddonLoader')).Loader;
+Addon.setPath(path.resolve(__dirname,'..','addons'));
 
 const {Col,Panel,Button,ButtonGroup,ListGroup,ListGroupItem,FormGroup,FormControl,InputGroup}=ReactBootstrap;
-const {FitPlot}=require(path.resolve(__dirname,'..','addons','FitPlot'));
-const {LinearModelFit}=require(path.resolve(__dirname,'..','addons','LinearModelFit'));
-const {DirectProportionFit}=require(path.resolve(__dirname,'..','addons','DirectProportionFit'));
-const {DataFrame}=require(path.resolve(__dirname,'..','addons','DataFrame'));
+const {FitPlot}=Addon.load('FitPlot');
+const {LinearModelFit}=Addon.load('LinearModelFit');
+const {DirectProportionFit}=Addon.load('DirectProportionFit');
+const {DataFrame}=Addon.load('DataFrame');
 
 class Input extends React.Component{
   render(){

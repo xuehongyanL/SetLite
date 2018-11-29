@@ -4,8 +4,8 @@ function FitPlot(pts,func,id){
   if(!pts.length) dat=[];
   else{
     pts.columns=['x','y'];
-    let xs=pts.get('x').to_json({orient:'records'});
-    let ys=pts.get('y').to_json({orient:'records'});
+    let xs=pts.get('x');
+    let ys=pts.get('y');
     let dat1={x:xs,y:ys,name:'Points',mode:'markers'};
     if(!func) dat=[dat1];
     else{

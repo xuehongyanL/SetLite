@@ -4,7 +4,7 @@ const {Col,Panel,Button,ButtonGroup,ListGroup,ListGroupItem,FormGroup,FormContro
 const {FitPlot}=require(path.resolve(__dirname,'..','addons','FitPlot'));
 const {LinearModelFit}=require(path.resolve(__dirname,'..','addons','LinearModelFit'));
 const {DirectProportionFit}=require(path.resolve(__dirname,'..','addons','DirectProportionFit'));
-const {DataFrame}=require('pandas-js');
+const {DataFrame}=require(path.resolve(__dirname,'..','addons','DataFrame'));
 
 class Input extends React.Component{
   render(){
@@ -30,7 +30,7 @@ class Fit extends React.Component{
       nowxMode:'warning',nowyMode:'warning',
     };
     this.stat={
-      pts:new DataFrame(),
+      pts:new DataFrame(['x','y']),
       sumx:0,sumy:0,sumxy:0,
       sqsumx:0,sqsumy:0,
     };
@@ -59,7 +59,7 @@ class Fit extends React.Component{
     if(!y) this.setState({nowyMode:'error',validVal:false});
     if((!x&&x!=0)||(!y&&y!=0)){alert('invalid value');return;}
     let stat=this.stat;
-    stat.pts=stat.pts.append(new DataFrame([{'x':x,'y':y}]));
+    stat.pts.add({'x':x,'y':y});
     stat.sumx+=x;
     stat.sumy+=y;
     stat.sumxy+=x*y;
@@ -73,20 +73,19 @@ class Fit extends React.Component{
   }
   rm_pt(id){
     var stat=this.stat;
-    let temp=stat.pts.to_json({orient: 'records'})
-    let pt=temp.splice(id,1)[0];
+    let pt=stat.pts.loc(id);
+    stat.pts.drop(id);
     stat.sumx-=pt.x;
     stat.sumy-=pt.y;
     stat.sumxy-=pt.x*pt.y;
     stat.sqsumx-=pt.x*pt.x;
     stat.sqsumy-=pt.y*pt.y;
-    stat.pts=new DataFrame(temp);
     this.setState({cnt: this.state.cnt-1});
   }
   render(){
     var self=this;
     var stat=this.stat;
-    var res=stat.pts.to_json({orient:'records'}).map(function(pt,move){
+    var res=stat.pts.to_record().map(function(pt,move){
       return(
         <ListGroupItem key={move}>
           <button onClick={()=>{self.rm_pt(move);}}>

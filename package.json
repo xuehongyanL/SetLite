@@ -6,9 +6,7 @@
   "scripts": {
     "start": "electron ."
   },
-  "dependencies": {
-    "pandas-js": "^0.2.4"
-  },
+  "dependencies": {},
   "devDependencies": {
     "electron": "^3.0.10"
   },

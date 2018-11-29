@@ -1,8 +1,10 @@
+const {Col,Panel,Button,ButtonGroup,ListGroup,ListGroupItem,FormGroup,FormControl,InputGroup}=ReactBootstrap;
+
 const path=require('path');
-const Addon=require(path.resolve(__dirname,'..','addons','AddonLoader')).Loader;
+const Addon=require(path.resolve(__dirname,'..','addons','AddonLoader')).AddonLoader;
 Addon.setPath(path.resolve(__dirname,'..','addons'));
 
-const {Col,Panel,Button,ButtonGroup,ListGroup,ListGroupItem,FormGroup,FormControl,InputGroup}=ReactBootstrap;
+const {Statistics}=Addon.load('Statistics');
 const {FitPlot}=Addon.load('FitPlot');
 const {LinearModelFit}=Addon.load('LinearModelFit');
 const {DirectProportionFit}=Addon.load('DirectProportionFit');
@@ -31,17 +33,14 @@ class Fit extends React.Component{
       cnt:0,nowxVal:NaN,nowyVal:NaN,
       nowxMode:'warning',nowyMode:'warning',
     };
-    this.stat={
-      pts:new DataFrame(['x','y']),
-      sumx:0,sumy:0,sumxy:0,
-      sqsumx:0,sqsumy:0,
-    };
+    this.df=new DataFrame(['x','y']);
+    this.Stat=new Statistics();
     this.xianxingFit=()=>{
-      FitPlot(this.stat.pts,LinearModelFit(this.stat,this.state.cnt),'plot');
+      FitPlot(this.df,LinearModelFit(this.Stat.dat,this.state.cnt),'plot');
       $("#collapseOne").collapse('show');
     };
     this.zhengbiliFit=()=>{
-      FitPlot(this.stat.pts,DirectProportionFit(this.stat,this.state.cnt),'plot');
+      FitPlot(this.df,DirectProportionFit(this.Stat.dat,this.state.cnt),'plot');
       $("#collapseOne").collapse('show');
     };
   }
@@ -60,13 +59,9 @@ class Fit extends React.Component{
     if(!x) this.setState({nowxMode:'error',validVal:false});
     if(!y) this.setState({nowyMode:'error',validVal:false});
     if((!x&&x!=0)||(!y&&y!=0)){alert('invalid value');return;}
-    let stat=this.stat;
-    stat.pts.add({'x':x,'y':y});
-    stat.sumx+=x;
-    stat.sumy+=y;
-    stat.sumxy+=x*y;
-    stat.sqsumx+=x*x;
-    stat.sqsumy+=y*y;
+    let record={'x':x,'y':y};
+    this.df.add(record);
+    this.Stat.doo(record);
     this.setState({
       cnt: this.state.cnt+1,
       nowxVal: NaN,nowyVal: NaN,
@@ -74,28 +69,28 @@ class Fit extends React.Component{
     });
   }
   rm_pt(id){
-    var stat=this.stat;
-    let pt=stat.pts.loc(id);
-    stat.pts.drop(id);
-    stat.sumx-=pt.x;
-    stat.sumy-=pt.y;
-    stat.sumxy-=pt.x*pt.y;
-    stat.sqsumx-=pt.x*pt.x;
-    stat.sqsumy-=pt.y*pt.y;
-    this.setState({cnt: this.state.cnt-1});
+    let record=this.df.loc(id);
+    this.df.drop(id);
+    this.Stat.undo(record);
+    this.setState({cnt:this.state.cnt-1});
   }
   render(){
     var self=this;
-    var stat=this.stat;
-    var res=stat.pts.to_record().map(function(pt,move){
+    var records=this.df.to_record().map(function(record,idx){
       return(
-        <ListGroupItem key={move}>
-          <button onClick={()=>{self.rm_pt(move);}}>
+        <ListGroupItem key={idx}>
+          <button onClick={()=>{self.rm_pt(idx);}}>
             <span className="glyphicon glyphicon-minus"></span>
           </button>
-          &nbsp;&nbsp;&nbsp;({pt.x},{pt.y})
+          &nbsp;&nbsp;&nbsp;({record.x},{record.y})
         </ListGroupItem>);
     });
+    let statistics=[];
+    for(let key in self.Stat.dat){
+      if(self.Stat.vis[key]) statistics.push(
+        <ul key={key}>{key}: {self.Stat.dat[key].toFixed(4)}</ul>
+      );
+    }
     return(
       <div>
         <Col id="upContainer" sm={12} lg={8}>
@@ -119,17 +114,13 @@ class Fit extends React.Component{
               <Button bsStyle="default" onClick={this.xianxingFit.bind(this)}>线性回归</Button>
               <Button bsStyle="default" onClick={this.zhengbiliFit.bind(this)}>正比例回归</Button>
             </ButtonGroup>
-            <ListGroup>{res}</ListGroup>
+            <ListGroup>{records}</ListGroup>
           </Col>
           <Col id="rightContainer" sm={6}>
             <Panel bsStyle="info">
               <Panel.Heading><Panel.Title>Statistics</Panel.Title></Panel.Heading>
               <Panel.Body>
-                <ul>sumx: {stat.sumx.toFixed(4)}</ul>
-                <ul>sumy: {stat.sumy.toFixed(4)}</ul>
-                <ul>sumxy: {stat.sumxy.toFixed(4)}</ul>
-                <ul>sqsumx: {stat.sqsumx.toFixed(4)}</ul>
-                <ul>sqsumy: {stat.sqsumy.toFixed(4)}</ul>
+                {statistics}
               </Panel.Body>
             </Panel>
           </Col>

@@ -4,7 +4,7 @@ var AddonLoader=function(){
         this.path=path;
     }
     this.load=function(name){
-        return require(path.resolve(this.path,name));
+        return require(path.resolve(this.path,name,'index.js'));
     }
 }
-module.exports.Loader=new AddonLoader();
+module.exports.AddonLoader=new AddonLoader();

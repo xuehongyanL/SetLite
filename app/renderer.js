@@ -1,9 +1,11 @@
-const {Col,Panel,Button,ButtonGroup,ListGroup,ListGroupItem,FormGroup,FormControl,InputGroup}=ReactBootstrap;
+const {Col,Panel,Button,ButtonGroup,ListGroup,
+  ListGroupItem,FormGroup,FormControl,InputGroup}=ReactBootstrap;
 
 const path=require('path');
 const Addon=require(path.resolve(__dirname,'..','addons','AddonLoader')).AddonLoader;
 Addon.setPath(path.resolve(__dirname,'..','addons'));
 
+const {FitFunction}=Addon.load('LinearFunction');
 const {Statistics}=Addon.load('Statistics');
 const {FitPlot}=Addon.load('FitPlot');
 const {LinearModelFit}=Addon.load('LinearModelFit');
@@ -29,22 +31,22 @@ class Input extends React.Component{
 class Fit extends React.Component{
   constructor(props){
     super(props);
-    this.state={
-      cnt:0,nowxVal:NaN,nowyVal:NaN,
-      nowxMode:'warning',nowyMode:'warning',
-    };
+    this.state={nowxVal:NaN,nowyVal:NaN,nowxMode:'warning',nowyMode:'warning',};
     this.df=new DataFrame(['x','y']);
     this.Stat=new Statistics();
     this.xianxingFit=()=>{
-      FitPlot(this.df,LinearModelFit(this.Stat.dat,this.state.cnt),'plot');
+      FitPlot(this.df,LinearModelFit(this.Stat.dat),'plot');
       $("#collapseOne").collapse('show');
     };
     this.zhengbiliFit=()=>{
-      FitPlot(this.df,DirectProportionFit(this.Stat.dat,this.state.cnt),'plot');
+      FitPlot(this.df,DirectProportionFit(this.Stat.dat),'plot');
       $("#collapseOne").collapse('show');
     };
   }
   componentDidMount(){this.props.onRef(this);}
+  initState(){this.setState(
+    {nowxVal:NaN,nowyVal:NaN,nowxMode:'warning',nowyMode:'warning'}
+  );}
   handlerChange(event){
     let newVal=event.target.value;
     newVal=(newVal.match(/^\s+$/)||newVal=='')?NaN:newVal;
@@ -55,28 +57,24 @@ class Fit extends React.Component{
     });
   }
   add_pt(){
-    const [x,y]=[Number(this.state.nowxVal),Number(this.state.nowyVal)];
-    if(!x) this.setState({nowxMode:'error',validVal:false});
-    if(!y) this.setState({nowyMode:'error',validVal:false});
+    let [x,y]=[Number(this.state.nowxVal),Number(this.state.nowyVal)];
+    if(!x) this.setState({nowxMode:'error'});
+    if(!y) this.setState({nowyMode:'error'});
     if((!x&&x!=0)||(!y&&y!=0)){alert('invalid value');return;}
     let record={'x':x,'y':y};
     this.df.add(record);
     this.Stat.doo(record);
-    this.setState({
-      cnt: this.state.cnt+1,
-      nowxVal: NaN,nowyVal: NaN,
-      nowxMode: 'warning',nowyMode: 'warning'
-    });
+    this.initState();
   }
   rm_pt(id){
     let record=this.df.loc(id);
     this.df.drop(id);
     this.Stat.undo(record);
-    this.setState({cnt:this.state.cnt-1});
+    this.setState(this.state);
   }
   render(){
-    var self=this;
-    var records=this.df.to_record().map(function(record,idx){
+    let self=this;
+    let records=this.df.to_record().map(function(record,idx){
       return(
         <ListGroupItem key={idx}>
           <button onClick={()=>{self.rm_pt(idx);}}>
@@ -119,9 +117,7 @@ class Fit extends React.Component{
           <Col id="rightContainer" sm={6}>
             <Panel bsStyle="info">
               <Panel.Heading><Panel.Title>Statistics</Panel.Title></Panel.Heading>
-              <Panel.Body>
-                {statistics}
-              </Panel.Body>
+              <Panel.Body>{statistics}</Panel.Body>
             </Panel>
           </Col>
         </Col>
@@ -129,11 +125,11 @@ class Fit extends React.Component{
   }
 }
 
-class LinearFit extends React.Component{
+class FitManager extends React.Component{
     constructor(props){
       super();
       const self=this;
-      const ipcRenderer = require('electron').ipcRenderer;
+      const ipcRenderer=require('electron').ipcRenderer;
       ipcRenderer.on('fit',self.ipcHandler.bind(self));
     }
     onRef=(ref)=>{this.child=ref;}
@@ -142,10 +138,10 @@ class LinearFit extends React.Component{
       else if(arg=='addpt') this.child.add_pt();
     }
     undo(){
-      const cnt=this.child.state.cnt;
+      let cnt=this.child.Stat.dat.cnt;
       if(cnt) this.child.rm_pt(cnt-1);
-      else console.log('no pts left');
+      else alert('Exception: no pts left');
     }
     render(){return <Fit onRef={this.onRef} />;}
 }
-ReactDOM.render(<LinearFit />, document.getElementById("root"));
+ReactDOM.render(<FitManager />, document.getElementById("root"));

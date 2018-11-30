@@ -1,16 +1,11 @@
-LinearModelFit=(stat,n)=>{
-  if(n<2){
-    alert('Exception: not enough points');
-    return;
-  }
+LinearModelFit=function(stat){
+  let n=stat.cnt;
   let varx=stat.sqsumx/n-(stat.sumx/n)*(stat.sumx/n);
-  if(!varx){
-    alert('x= '+stat.sumx/n.toFixed(4));
-    return;
-  }
-  let a=-(stat.sumx*stat.sumxy-stat.sumy*stat.sqsumx)/varx/n/n;
-  let b=-(stat.sumx*stat.sumy/n/n-stat.sumxy/n)/varx;
-  alert('y= '+a.toFixed(4)+'+ '+b.toFixed(4)+' x');
-  return (x)=>(a+b*x);
+  let A=(stat.sumx*stat.sumy/n-stat.sumxy)/n;
+  let B=varx;
+  let C=(stat.sumx*stat.sumxy-stat.sumy*stat.sqsumx)/n/n;
+  let Fit=new FitFunction(A,B,C);
+  alert(Fit.toString());
+  return Fit;
 }
 module.exports.LinearModelFit=LinearModelFit;

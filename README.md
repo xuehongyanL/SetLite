@@ -16,11 +16,14 @@ HTML & JS based and (Cross-platform support in the future)
 Lightweight
 
 ## Get Started
-**source version**:
 
-You can easily install *electron-packager* and so-on to pack the source.
+### macOS or Linux
 
-**release version**:
+You may use [*electron-packager*](https://github.com/electron-userland/electron-packager), [*electron-builder*](https://github.com/electron-userland/electron-builder) and so-on to pack the source.
+
+But mention that *I have not take these platforms into consideration* :)
+
+### Windows
 
 I have used [miniblink](https://github.com/weolar/miniblink49) as alternative for electron built-in browser kernel, which greatly compressed the release package.
 

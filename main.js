@@ -12,12 +12,10 @@ function createWindow(){
     menu.append(new MenuItem({
         label:'addpt',
         click:function(){win.webContents.send('fit','addpt');},
-        accelerator: 'Enter'
     }));
     menu.append(new MenuItem({
         label:'undo',
         click:function(){win.webContents.send('fit','undo');},
-        accelerator: 'CmdOrCtrl+Z'
     }));
     Menu.setApplicationMenu(menu);
     win.loadFile(path.resolve(__dirname,'public','index.html'));

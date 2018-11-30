@@ -7,7 +7,7 @@ var Basic=function(){
     this.sqsumy={init:0,vis:true};
     this.handler={doo:function(record){
             let x=record.x,y=record.y;
-            this.cnt++;
+            this.dat.cnt++;
             this.dat.sumx+=x;
             this.dat.sumy+=y;
             this.dat.sumxy+=x*y;
@@ -15,7 +15,7 @@ var Basic=function(){
             this.dat.sqsumy+=y*y;
         },undo:function(record){
             let x=record.x,y=record.y;
-            this.cnt--;
+            this.dat.cnt--;
             this.dat.sumx-=x;
             this.dat.sumy-=y;
             this.dat.sumxy-=x*y;

@@ -5,6 +5,7 @@ const path=require('path');
 const Addon=require(path.resolve(__dirname,'..','addons','AddonLoader')).AddonLoader;
 Addon.setPath(path.resolve(__dirname,'..','addons'));
 
+const {FitFunction}=Addon.load('LinearFunction');
 const {Statistics}=Addon.load('Statistics');
 const {FitPlot}=Addon.load('FitPlot');
 const {LinearModelFit}=Addon.load('LinearModelFit');

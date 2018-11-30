@@ -133,15 +133,7 @@ class FitManager extends React.Component{
       ipcRenderer.on('fit',self.ipcHandler.bind(self));
     }
     onRef=(ref)=>{this.child=ref;}
-    ipcHandler(event,arg){
-      if(arg=='undo') this.undo();
-      else if(arg=='addpt') this.child.add_pt();
-    }
-    undo(){
-      let cnt=this.child.Stat.dat.cnt;
-      if(cnt) this.child.rm_pt(cnt-1);
-      else alert('Exception: no pts left');
-    }
+    ipcHandler(event,arg){}
     render(){return <Fit onRef={this.onRef} />;}
 }
 ReactDOM.render(<FitManager />, document.getElementById("root"));

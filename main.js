@@ -10,17 +10,21 @@ function createWindow(){
     });
     menu=new Menu();
     menu.append(new MenuItem({
-        label:'addpt',
-        click:function(){win.webContents.send('fit','addpt');},
+        label:'Files',
+        submenu:[{label:'New'},
+        {label:'Save'},
+        {type:'separator'},
+        {label:'Exit',role:'close'}]
     }));
     menu.append(new MenuItem({
-        label:'undo',
-        click:function(){win.webContents.send('fit','undo');},
+        label:'Edit',
+        submenu:[{label:'Add',click:function(){win.webContents.send('fit','addpt');}},
+        {label:'Undo',click:function(){win.webContents.send('fit','undo');}}]
     }));
     Menu.setApplicationMenu(menu);
     win.loadFile(path.resolve(__dirname,'public','index.html'));
-    // win.webContents.openDevTools();
-    win.on('close',() => {win = null;});
+    win.webContents.openDevTools();
+    win.on('close',()=>{win=null;});
     //win.on('resize',() => {win.reload();})
 }
 

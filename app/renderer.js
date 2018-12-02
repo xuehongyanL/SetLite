@@ -5,6 +5,7 @@ const path=require('path');
 const Addon=require(path.resolve(__dirname,'..','addons','AddonLoader')).AddonLoader;
 Addon.setPath(path.resolve(__dirname,'..','addons'));
 
+const {load,save}=Addon.load('fileIO');
 const {FitFunction}=Addon.load('LinearFunction');
 const {Statistics}=Addon.load('Statistics');
 const {FitPlot}=Addon.load('FitPlot');
@@ -133,7 +134,19 @@ class FitManager extends React.Component{
       ipcRenderer.on('fit',self.ipcHandler.bind(self));
     }
     onRef=(ref)=>{this.child=ref;}
-    ipcHandler(event,arg){}
+    ipcHandler(event,arg){
+      if(arg=='save') save(this.child.df.to_csv());
+      if(arg=='load'){
+        load().split('\r\n').map((value,index)=>{
+          console.log(this);
+          let temp=value.split(',');
+          let record={x:Number(temp[0]),y:Number(temp[1])};
+          this.child.df.add(record);
+          this.child.Stat.doo(record);
+        });
+        this.child.initState();
+      }
+    }
     render(){return <Fit onRef={this.onRef} />;}
 }
 ReactDOM.render(<FitManager />, document.getElementById("root"));

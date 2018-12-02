@@ -33,9 +33,22 @@ var DataFrame=function(cols){
         this.columns.splice(this.columns.indexOf(col),1);
         delete this.values[col];
     }
+    this.to_array=function(){
+        let self=this;
+        return Array(this.length).fill(null).map(
+            function(value,index){
+                dat=[];
+                for(col of self.columns) dat.push(self.values[col][index]);
+                return dat;
+            }
+        );
+    }
     this.to_record=function(){
         let self=this;
-        return Array(this.length).fill(null).map(function(value,index){return self.loc(index);});
+        return Array(this.length).fill(null).map((value,index)=>self.loc(index));
+    }
+    this.to_csv=function(){
+        return this.to_array().map((value,index)=>value.join()).join('\r\n');
     }
 }
 module.exports.DataFrame=DataFrame;

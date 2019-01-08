@@ -3,3 +3,9 @@ release/
 run.bat
 
 yarn\.lock
+
+\.idea/
+
+package-lock\.json
+
+app/bundle\.js

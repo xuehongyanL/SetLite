@@ -3,3 +3,5 @@ release/
 run.bat
 
 yarn\.lock
+
+\.idea/

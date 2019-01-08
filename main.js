@@ -5,7 +5,7 @@ function createWindow(){
     let win=new BrowserWindow({
         width:800,height:600,title:'SetLite',
         fullscreenable:false,
-        webPreferences:{javascript:true,plugins:true}
+        webPreferences:{javascript:true,plugins:true,nodeIntegration:true}
     });
     menu=new Menu();
     menu.append(new MenuItem({
@@ -18,7 +18,7 @@ function createWindow(){
     }));
     Menu.setApplicationMenu(menu);
     win.loadFile(path.resolve(__dirname,'public','index.html'));
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
     win.on('close',()=>{win=null;});
     //win.on('resize',() => {win.reload();})
 }

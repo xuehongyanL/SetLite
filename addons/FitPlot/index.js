@@ -1,4 +1,4 @@
-const {newPlot}=require(path.resolve(__dirname,'plotly.min.js'));
+const {newPlot}=require('./plotly.min.js');
 function FitPlot(pts,fit,id){
   let dat;
   if(!pts.length) dat=[];

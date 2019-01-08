@@ -1,3 +1,4 @@
+const {FitFunction}=require('../LinearFunction');
 LinearModelFit=function(stat){
   let n=stat.cnt;
   let varx=stat.sqsumx/n-(stat.sumx/n)*(stat.sumx/n);
@@ -7,5 +8,5 @@ LinearModelFit=function(stat){
   let Fit=new FitFunction(A,B,C);
   alert(Fit.toString());
   return Fit;
-}
+};
 module.exports.LinearModelFit=LinearModelFit;

@@ -5,9 +5,11 @@
 
 A lightweight electron app for data processing & visualization
 
+(And now it's a calculator for linear fitting (~,~ ) )
+
 ------
 
-[A LOGO HERE]
+[MAYBE A LOGO HERE]
 
 ------
 ## Features
@@ -56,8 +58,6 @@ csv,Excel,SQL,NoSQL,...
 A plugin manager is under development.
 
 ### Remote computing
-
-### LintingLintingLinting!!!
 
 ### and more
 

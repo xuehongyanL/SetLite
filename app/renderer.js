@@ -5,6 +5,8 @@ import {
   ListGroupItem, FormGroup, FormControl, InputGroup
 } from 'react-bootstrap'
 
+import { HotTable } from '@handsontable/react'
+
 const {load, save} = require('../addons/fileIO')
 const {FitFunction} = require('../addons/LinearFunction')
 const {Statistics} = require('../addons/Statistics')
@@ -12,6 +14,25 @@ const {FitPlot} = require('../addons/FitPlot')
 const {LinearModelFit} = require('../addons/LinearModelFit')
 const {DirectProportionFit} = require('../addons/DirectProportionFit')
 const {DataFrame} = require('../addons/DataFrame')
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.data = [
+      ["", "Ford", "Volvo", "Toyota", "Honda"],
+      ["2016", 10, 11, 12, 13],
+      ["2017", 20, 11, 14, 13],
+      ["2018", 30, 15, 12, 13]
+    ];
+  }
+  render() {
+    return (
+      <div id="hot-app">
+        <HotTable data={this.data} colHeaders={true} rowHeaders={true} width="600" height="300" stretchH="all" />
+      </div>
+    );
+  }
+}
 
 class Input extends React.Component {
   render() {
@@ -32,16 +53,22 @@ class Input extends React.Component {
 class Fit extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {nowxVal: NaN, nowyVal: NaN, nowxMode: 'warning', nowyMode: 'warning',}
+    this.state = {
+      nowxVal: NaN,
+      nowyVal: NaN,
+      nowxMode: 'warning',
+      nowyMode: 'warning',
+      plotExpanded: false,
+      fit: null,
+    }
     this.df = new DataFrame(['x', 'y'])
+    console.log(this.df.to_record())
     this.Stat = new Statistics()
     this.xianxingFit = () => {
-      FitPlot(this.df, LinearModelFit(this.Stat.dat), 'plot')
-      $('#collapseOne').collapse('show')
+      this.setState({fit:LinearModelFit(this.Stat.dat),plotExpanded:true})
     }
     this.zhengbiliFit = () => {
-      FitPlot(this.df, DirectProportionFit(this.Stat.dat), 'plot')
-      $('#collapseOne').collapse('show')
+      this.setState({fit:DirectProportionFit(this.Stat.dat),plotExpanded:true})
     }
   }
 
@@ -108,17 +135,22 @@ class Fit extends React.Component {
     return (
       <div>
         <Col id="upContainer" sm={12} lg={8}>
+          <App />
           <Input id="nowx" name="x" mode={this.state.nowxMode}
             value={this.state.nowxVal} onChange={this.handlerChange.bind(this)}/>
           <Input id="nowy" name="y" mode={this.state.nowyMode}
             value={this.state.nowyVal} onChange={this.handlerChange.bind(this)}/>
         </Col>
         <Col id="middleContainer" sm={12} lg={8}>
-          <Panel bsStyle="default">
-            <Panel.Heading><Panel.Title toggle>Plot</Panel.Title></Panel.Heading>
-            <Panel.Collapse id="collapseOne">
+          <Panel bsStyle="default" expanded={this.state.plotExpanded}>
+            <Panel.Heading>
+              <Panel.Title>
+                <a onClick={()=>this.setState({plotExpanded:!this.state.plotExpanded})}>Plot</a>
+              </Panel.Title>
+            </Panel.Heading>
+            <Panel.Collapse>
               <Panel.Body sm={12}>
-                <div id="plot"></div>
+                <FitPlot pts={this.df.to_record()} fit={this.state.fit} />
               </Panel.Body>
             </Panel.Collapse>
           </Panel>

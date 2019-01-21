@@ -75,7 +75,7 @@ facebook/[react](https://github.com/facebook/react)
 
 react-bootstrap/[react-bootstrap](https://github.com/react-bootstrap/react-bootstrap)
 
-plotly/[plotly.js](https://github.com/plotly/plotly.js)
+FormidableLabs/[victory](https://github.com/FormidableLabs/victory)
 
 ## License
 

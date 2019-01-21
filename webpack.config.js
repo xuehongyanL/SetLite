@@ -2,7 +2,7 @@ let webpack = require('webpack');
 let path = require('path');
 module.exports = {
   target: 'electron-renderer',
-  entry:__dirname+'/app/renderer.js',
+  entry:__dirname + '/app/renderer.js',
   output: {
     path: __dirname,
     filename: './app/bundle.js'

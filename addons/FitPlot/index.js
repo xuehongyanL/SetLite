@@ -7,8 +7,6 @@ class Chart extends React.Component {
     super(props);
   }
   render() {
-    console.log(this.props.lineData);
-    console.log(this.props.scatterData);
     return(
       <VictoryChart
         theme={VictoryTheme.material}

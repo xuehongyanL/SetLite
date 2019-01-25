@@ -2,7 +2,7 @@ let webpack = require('webpack');
 let path = require('path');
 module.exports = {
   target: 'electron-renderer',
-  entry:__dirname+'/app/renderer.js',
+  entry:__dirname + '/app/renderer.js',
   output: {
     path: __dirname,
     filename: './app/bundle.js'
@@ -18,6 +18,20 @@ module.exports = {
           plugins:['@babel/plugin-proposal-class-properties'],
           compact: false
         }
+      },
+      {
+        test:/\.css$/,
+        loader:['style-loader','css-loader']
+      },
+      {
+        test:/\.(ttf|eot|woff|woff2|svg)$/,
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: 'public/fonts/'
+          }
+        }]
       }
     ]
   },

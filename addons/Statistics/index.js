@@ -1,9 +1,11 @@
 let Statistics = function(){
   this.dat = {};
+  this.names = {};
   this.handlers = {};
   this.vis = {};
   this.regVar = function(name,dat){
     this.dat[name] = dat.init;
+    this.names[name] = dat.name;
     this.vis[name] = dat.vis || false;
   };
   this.regHandler = function(name,handler){

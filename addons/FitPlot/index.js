@@ -1,25 +1,78 @@
-const {newPlot} = require('./plotly.min.js');
+import { VictoryChart,VictoryTheme,VictoryScatter,VictoryLine} from 'victory';
+import React, { Component } from 'react';
+import { render } from 'react-dom';
 
-function FitPlot(pts, fit, id) {
-  let dat;
-  if (!pts.length) dat = [];
-  else {
-    pts.columns = ['x', 'y'];
-    let [xs, ys] = [pts.get('x'), pts.get('y')];
-    let dat1 = {x: xs, y: ys, name: 'Points', mode: 'markers'};
-    let func = fit ? fit.toFunction() : null;
-    if (!func) dat = [dat1];
-    else {
-      let maxx = Math.max.apply(null, xs), minx = Math.min.apply(null, xs);
-      let left = minx - Math.max(1, 0.2 * (maxx - minx)), right = maxx + Math.max(1, 0.2 * (maxx - minx));
-      let step = (right - left) / 200;
-      let xRange = Array(200).fill(0).map((v, i) => i * step + left);
-      let yRange = xRange.map((value) => (func(value)));
-      let dat2 = {x: xRange, y: yRange, name: 'Fit', mode: 'lines'};
-      dat = [dat1, dat2];
-    }
+class Chart extends React.Component {
+  constructor(props){
+    super(props);
   }
-  newPlot($('#' + id)[0], dat, {title: (fit ? fit.toString() : null)}, {displaylogo: false});
+  render() {
+    return(
+      <VictoryChart
+        theme={VictoryTheme.material}
+        domain={this.props.domain}
+        width={800}
+        height={600}>
+        <VictoryScatter
+          style={{data:{fill:'#c43a31'}}}
+          size={4}
+          data={this.props.scatterData}
+        />
+        <VictoryLine
+          style={{
+            data:{stroke:'#c43a31'},
+            parent:{border:'1px solid #ccc'}
+          }}
+          data={this.props.lineData}
+        />
+      </VictoryChart>);
+  }
 }
 
-module.exports.FitPlot = FitPlot;
+class FitPlot extends React.Component {
+  constructor(props){
+    super(props);
+  }
+  render() {
+    let pts = this.props.pts;
+    let fit = this.props.fit;
+    let dat,maxx,minx,maxy,miny;
+    if (!pts.length){
+      maxx = 1;
+      maxy = 1;
+      minx = -1;
+      miny = -1;
+      dat = [null,null];
+    }
+    else{
+      let dat1 = pts;
+      let xs = pts.map((value) => (value['x']));
+      maxx = Math.max.apply(null, xs);
+      minx = Math.min.apply(null, xs);
+      let deltax = maxx - minx;
+      maxx += Math.max(1, 0.2 * deltax);
+      minx -= Math.max(1, 0.2 * deltax);
+      let ys = pts.map((value) => (value['y']));
+      maxy = Math.max.apply(null, ys);
+      miny = Math.min.apply(null, ys);
+      let deltay = maxy - miny;
+      maxy += Math.max(1, 0.2 * deltay);
+      miny -= Math.max(1, 0.2 * deltay);
+      let func = fit ? fit.toFunction() : null;
+      if (!func){
+        dat = [dat1,null];
+      }
+      else {
+        let step = (maxx - minx) / 200;
+        let xRange = Array(200).fill(0).map((v, i) => i * step + minx);
+        let dat2 = xRange.map((value) => ({x:value,y:func(value)}));
+        dat = [dat1, dat2];
+      }
+    }
+    let domain = {x:[minx,maxx],y:[miny,maxy]};
+    // console.log(dat);
+    return (<Chart scatterData={dat[0]} lineData={dat[1]} domain={domain} />);
+  }
+}
+
+export {FitPlot};

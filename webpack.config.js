@@ -18,6 +18,20 @@ module.exports = {
           plugins:['@babel/plugin-proposal-class-properties'],
           compact: false
         }
+      },
+      {
+        test:/\.css$/,
+        loader:['style-loader','css-loader']
+      },
+      {
+        test:/\.(ttf|eot|woff|woff2|svg)$/,
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: 'public/fonts/'
+          }
+        }]
       }
     ]
   },

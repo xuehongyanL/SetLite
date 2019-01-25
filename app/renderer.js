@@ -10,8 +10,8 @@ import {
   Modal,
   Panel
 } from 'react-bootstrap';
-
 import {HotTable} from '@handsontable/react';
+import {InlineMath} from 'react-katex';
 
 const {load, save} = require('../addons/fileIO');
 const {FitFunction} = require('../addons/LinearFunction');
@@ -63,7 +63,7 @@ class ModalInput extends React.Component {
     let id = event.target.id;
     this.setState({
       [id + 'Val']: newVal,
-      [id + 'Mode']: (Number(newVal) || newVal === 0) ? 'success' : 'error'
+      [id + 'Mode']: (Number(newVal) || Number(newVal) === 0) ? 'success' : 'error'
     });
   }
 
@@ -74,8 +74,8 @@ class ModalInput extends React.Component {
 
   addPt() {
     let [x, y] = [Number(this.state.nowxVal), Number(this.state.nowyVal)];
-    if (!x) this.setState({nowxMode: 'error'});
-    if (!y) this.setState({nowyMode: 'error'});
+    if (!x && x !== 0) this.setState({nowxMode: 'error'});
+    if (!y && y !== 0) this.setState({nowyMode: 'error'});
     if ((!x && x !== 0) || (!y && y !== 0)) {
       alert('invalid value');
       return;
@@ -136,7 +136,7 @@ class Fit extends React.Component {
     }
     for(let record of records){
       record = {x:Number(record['x']),y:Number(record['y'])};
-      if(!record['x'] || !record['y']) continue;
+      if((!record['x'] && record['x'] !== 0) || (!record['y'] && record['x'] !== 0)) continue;
       this.df.add(record);
       this.Stat.doo(record);
     }
@@ -161,7 +161,7 @@ class Fit extends React.Component {
     let statistics = [];
     for (let key in self.Stat.dat) {
       if (self.Stat.vis[key]) statistics.push(
-        <ul key={key}>{key}: {self.Stat.dat[key].toFixed(4)}</ul>
+        <ul key={key}><InlineMath>{self.Stat.names[key]}</InlineMath>: {self.Stat.dat[key].toFixed(4)}</ul>
       );
     }
     return (
@@ -214,7 +214,7 @@ class Fit extends React.Component {
               data={this.state.record}
               ref={this.dataRef}
               colHeaders={true}
-              colWidths={[177,177]}
+              stretchH={'all'}
             />
           </Col>
           <Col id="rightContainer" sm={6}>

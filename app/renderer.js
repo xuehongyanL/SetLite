@@ -213,7 +213,7 @@ class Fit extends React.Component {
             <HotTable
               data={this.state.record}
               ref={this.dataRef}
-              colHeaders={true}
+              colHeaders={['X','Y']}
               stretchH={'all'}
             />
           </Col>
